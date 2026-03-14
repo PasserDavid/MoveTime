@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>動起來！！！</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background-color: #000;
+      color: #fff;
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    /* 容器：用 flex 讓手機直式與橫式、平板、電腦都能自動適配 */
+    .container {
+      max-width: 700px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .group {
+      background-color: #111;
+      border-radius: 10px;
+      padding: 16px;
+      border: 1px solid #333;
+    }
+
+    /* 按鈕列 */
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .btn-toggle {
+      padding: 12px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      color: #fff;
+      position: relative;
+    }
+
+    #btnMove {
+      background: #3b82f6;
+      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
+    }
+    #btnDodge {
+      background: #10b981;
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+    }
+
+    /* 開啟狀態：發光變亮 */
+    .btn-toggle.active {
+      filter: brightness(1.4);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .btn-toggle.inactive {
+      filter: brightness(0.7);
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
+    }
+
+    .btn-toggle:active {
+      transform: scale(0.98);
+    }
+
+    /* 下拉與標籤 */
+    .level-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .level-group {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    label {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    select,
+    input {
+      font-size: 16px;
+      padding: 6px 10px;
+      background-color: #222;
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+
+    input[type="number"] {
+      width: 90px;
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #888;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    /* 隨機區塊 */
+    .random-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .random-row input[type="number"] {
+      width: 60px;
+    }
+
+    .random-row span.unit {
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .random-row input[type="checkbox"] {
+      transform: scale(1.2);
+    }
+
+    /* 停止條件 */
+    .stop-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stop-row input[type="number"] {
+      width: 60px;
+    }
+
+    .stop-row button {
+      font-size: 16px;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    #btnStart {
+      background: #f97316;
+      box-shadow: 0 0 8px rgba(249, 115, 16, 0.4);
+    }
+
+    #btnStop {
+      background: #ef4444;
+      box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
+    }
+
+    #btnStart:disabled,
+    #btnStop:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .status {
+      text-align: center;
+      font-size: 14px;
+      color: #888;
+      margin: 12px 0;
+    }
+
+    /* 手機直式 / 橫式、板 / 電腦都自動適配 */
+    @media (min-width: 768px) {
+      .btn-row,
+      .level-row,
+      .random-row,
+      .stop-row {
+        flex-direction: row;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="group">
+      <div class="btn-row">
+        <button id="btnMove" class="btn-toggle btn-move inactive" type="button">移動</button>
+        <button id="btnDodge" class="btn-toggle btn-dodge inactive" type="button">閃躲</button>
+      </div>
+      <div class="level-row">
+        <div class="level-group">
+          <label for="levelMove">移動等級：</label>
+          <select id="levelMove">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+        <div class="level-group">
+          <label for="levelDodge">閃躲等級：</label>
+          <select id="levelDodge">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="input-row" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
+        <label for="fixedSec">秒數：</label>
+        <input
+          type="number"
+          id="fixedSec"
+          min="0.3"
+          max="5"
+          step="0.1"
+          value="3"
+        />
+        <span class="unit">秒</span>
+      </div>
+      <div class="hint">請輸入 0.3～5 秒</div>
+
+      <div class="random-row">
+        <label>
+          <input type="checkbox" id="randomCheck" />
+          <span>隨機</span>
+        </label>
+        <div id="randomRange" style="display: none; display: flex; gap: 4px; align-items: center;">
+          <input
+            type="number"
+            id="minSec"
+            min="0.3"
+            max="5"
+            step="0.1"
+            placeholder="起"
+          />
+          <span>起</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="group">
+      <div class="stop-row">
+        <label for="stopCount">停止條件：</label>
+        <input
+          type="number"
+          id="stopCount"
+          placeholder="次"
+        />
+        <span>次</span>
+        <span>或</span>
+        <input
+          type="number"
+          id="stopMin"
+          placeholder="分"
+        />
+        <span>分</span>
+      </div>
+      <div class="hint">若皆不填，則一直執行</div>
+    </div>
+
+    <div class="group">
+      <div class="btn-row">
+        <button id="btnStart" type="button">開始</button>
+        <button id="btnStop" type="button" disabled>停止</button>
+      </div>
+      <div class="status" id="statusText">待機中</div>
+    </div>
+  </div>
+
+  <script>
+    // 音效檔對應表（可依你實際檔名調整）
+    const sounds = {
+      move: {
+        1: ["sounds/move1.mp3","sounds/move2.mp3","sounds/move3.mp3","sounds/move4.mp3",],
+        2: ["move1.mp3", "move2.mp3"],
+        3: ["move1.mp3", "move2.mp3", "move3.mp3"],
+      },
+      dodge: {
+        1: ["dodge1.mp3"],
+        2: ["dodge1.mp3", "dodge2.mp3"],
+        3: ["dodge1.mp3", "dodge2.mp3", "dodge3.mp3"],
+      },
+    };
+
+    // DOM 元件
+    const btnMove = document.getElementById("btnMove");
+    const btnDodge = document.getElementById("btnDodge");
+    const levelMove = document.getElementById("levelMove");
+    const levelDodge = document.getElementById("levelDodge");
+    const fixedSec = document.getElementById("fixedSec");
+    const randomCheck = document.getElementById("randomCheck");
+    const randomRange = document.getElementById("randomRange");
+    const minSec = document.getElementById("minSec");
+    const stopCount = document.getElementById("stopCount");
+    const stopMin = document.getElementById("stopMin");
+    const btnStart = document.getElementById("btnStart");
+    const btnStop = document.getElementById("btnStop");
+    const statusText = document.getElementById("statusText");
+
+    // 開關狀態
+    let isActive = {
+      move: false,
+      dodge: false,
+    };
+
+    // 計時器與計數器
+    let intervalId = null;
+    let playedCount = 0;
+    let startTime = null;
+
+    // 更新按鈕外觀
+    function updateBtnState() {
+      btnMove.classList.toggle("active", isActive.move);
+      btnMove.classList.toggle("inactive", !isActive.move);
+      btnDodge.classList.toggle("active", isActive.dodge);
+      btnDodge.classList.toggle("inactive", !isActive.dodge);
+    }
+
+    // 撥放音效
+    function playRandomSound() {
+      const choices = [];
+      if (isActive.move) {
+        const level = Number(levelMove.value);
+        choices.push(...sounds.move[level]);
+      }
+      if (isActive.dodge) {
+        const level = Number(levelDodge.value);
+        choices.push(...sounds.dodge[level]);
+      }
+      if (choices.length === 0) return;
+
+      const index = Math.floor(Math.random() * choices.length);
+      const audio = new Audio(choices[index]);
+      audio.play().catch(() => {});
+    }
+
+    // 隨機產生下次時間（毫秒）
+    function getNextInterval() {
+      let min = 0.3;
+      let max = 5;
+
+      if (randomCheck.checked) {
+        const inputMin = Number(minSec.value);
+        if (!isNaN(inputMin) && inputMin >= 0.3 && inputMin <= 4.9) {
+          min = inputMin;
+        }
+      }
+
+      const inputValue = Number(fixedSec.value);
+      if (!isNaN(inputValue) && inputValue >= 0.3 && inputValue <= 5) {
+        max = inputValue;
+      }
+
+      if (min > max) min = max;
+
+      const range = max - min;
+      const random = Math.random() * range + min;
+      return random * 1000;
+    }
+
+    // 更新狀態文字
+    function updateStatus() {
+      if (!intervalId) {
+        statusText.textContent = "待機中";
+        return;
+      }
+
+      let msg = "播放中";
+      if (playedCount > 0) {
+        msg += `，已播 ${playedCount} 次`;
+      }
+      if (startTime) {
+        const diff = (Date.now() - startTime) / 1000;
+        const mins = Math.floor(diff / 60);
+        const secs = Math.floor(diff % 60);
+        msg += `（約 ${mins} 分 ${secs} 秒）`;
+      }
+      statusText.textContent = msg;
+    }
+
+    // 開始
+    btnStart.onclick = function () {
+      if (intervalId) return;
+
+      const minVal = Number(minSec.value);
+      const secVal = Number(fixedSec.value);
+      const cntVal = Number(stopCount.value);
+      const minVal2 = Number(stopMin.value);
+
+      if (
+        (isNaN(secVal) || secVal < 0.3 || secVal > 5) ||
+        (randomCheck.checked && (isNaN(minVal) || minVal < 0.3))
+      ) {
+        alert("請輸入 0.3～5 秒");
+        return;
+      }
+
+      if (!isActive.move && !isActive.dodge) {
+        alert("請至少開啟「移動」或「閃躲」其中一個");
+        return;
+      }
+
+      // 重置狀態
+      playedCount = 0;
+      startTime = Date.now();
+
+      // 設定計時器
+      playRandomSound();
+      intervalId = setInterval(() => {
+        // 檢查次數停止
+        if (!isNaN(cntVal) && cntVal > 0 && playedCount >= cntVal) {
+          clearInterval(intervalId);
+          intervalId = null;
+          btnStart.disabled = false;
+          btnStop.disabled = true;
+          updateStatus();
+          return;
+        }
+
+        // 檢查分鐘停止
+        if (!isNaN(minVal2) && minVal2 > 0) {
+          const elapsed = Date.now() - startTime;
+          const minutes = elapsed / 1000 / 60;
+          if (minutes >= minVal2) {
+            clearInterval(intervalId);
+            intervalId = null;
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            updateStatus();
+            return;
+          }
+        }
+
+        playRandomSound();
+        playedCount++;
+        updateStatus();
+      }, getNextInterval());
+
+      btnStart.disabled = true;
+      btnStop.disabled = false;
+      updateStatus();
+    };
+
+    // 停止
+    btnStop.onclick = function () {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+        btnStart.disabled = false;
+        btnStop.disabled = true;
+        updateStatus();
+      }
+    };
+
+    // 開關按鈕
+    btnMove.onclick = function () {
+      isActive.move = !isActive.move;
+      updateBtnState();
+    };
+
+    btnDodge.onclick = function () {
+      isActive.dodge = !isActive.dodge;
+      updateBtnState();
+    };
+
+    // 隨機區塊顯示/隱藏
+    randomCheck.onchange = function () {
+      randomRange.style.display = this.checked ? "flex" : "none";
+    };
+
+    // 初始狀態
+    updateBtnState();
+    updateStatus();
+  </script>
+</body>
+</html>
