@@ -94,30 +94,35 @@
       const maxMin = parseFloat(document.getElementById("stopMin").value);
       if (maxCount > 0 && playedCount >= maxCount) return stopTraining();
       if (maxMin > 0 && (Date.now() - startTime) / 60000 >= maxMin) return stopTraining();
-
+    
       const choices = [];
       if (isActive.move) choices.push(...resources.move[document.getElementById("levelMove").value]);
       if (isActive.dodge) choices.push(...resources.dodge[document.getElementById("levelDodge").value]);
       
       if (choices.length === 0) return stopTraining();
-
+    
       const item = choices[Math.floor(Math.random() * choices.length)];
       
-      // 顯示圖片並播放音效
       const audio = new Audio(item.a);
-      audio.onplay = () => { actionImg.style.display = "block"; };
-      actionImg.src = item.i;
+      
+      // 核心邏輯：播放時顯示，1秒後隱藏
+      audio.onplay = () => { 
+          actionImg.src = item.i;
+          actionImg.style.display = "block"; 
+          setTimeout(() => { actionImg.style.display = "none"; }, 1000); 
+      };
       
       try {
         await audio.play();
       } catch (e) {
-        actionImg.style.display = "block"; // 若音效失敗仍顯示圖片
+        actionImg.src = item.i;
+        actionImg.style.display = "block";
+        setTimeout(() => { actionImg.style.display = "none"; }, 1000);
       }
-
+    
       playedCount++;
       updateStatus();
-
-      // 計算下次間隔
+    
       let max = parseFloat(document.getElementById("fixedSec").value) || 3;
       let min = parseFloat(document.getElementById("minSec").value) || 0.5;
       if (!document.getElementById("randomCheck").checked) min = max;
