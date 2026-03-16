@@ -41,10 +41,10 @@
     <div class="group">
       <div class="btn-row">
         <label>秒數：</label>
-        <input type="number" id="fixedSec" min="0.3" max="5" step="0.1" value="3" />
+        <input type="number" id="fixedSec" min="1" max="5" step="0.1" value="3" />
         <label style="margin-left:10px;"><input type="checkbox" id="randomCheck" /> 隨機</label>
         <div id="randomRange" style="display: none; align-items: center; gap: 4px;">
-          <input type="number" id="minSec" min="0.3" max="5" step="0.1" placeholder="0.5" /> 起
+          <input type="number" id="minSec" min="1" max="5" step="0.1" placeholder="0.5" /> 起
         </div>
       </div>
     </div>
@@ -105,11 +105,18 @@
       
       const audio = new Audio(item.a);
       
-      // 核心邏輯：播放時顯示，1秒後隱藏
-      audio.onplay = () => { 
-          actionImg.src = item.i;
-          actionImg.style.display = "block"; 
-          setTimeout(() => { actionImg.style.display = "none"; }, 1000); 
+      // --- 設定音效與圖片同步邏輯 ---
+      audio.onplay = () => {
+          // 1. 音效開始後，先等 0.1 秒 (100ms) 再秀圖
+          setTimeout(() => {
+              actionImg.src = item.i;
+              actionImg.style.display = "block";
+              
+              // 2. 圖片顯示後，維持 0.8 秒 (800ms)再消失
+              setTimeout(() => {
+                  actionImg.style.display = "none";
+              }, 800); 
+          }, 100); 
       };
       
       try {
@@ -117,17 +124,21 @@
       } catch (e) {
         actionImg.src = item.i;
         actionImg.style.display = "block";
-        setTimeout(() => { actionImg.style.display = "none"; }, 1000);
+        setTimeout(() => { actionImg.style.display = "none"; }, 800);
       }
     
       playedCount++;
       updateStatus();
     
       let max = parseFloat(document.getElementById("fixedSec").value) || 3;
-      let min = parseFloat(document.getElementById("minSec").value) || 0.5;
+      let min = parseFloat(document.getElementById("minSec").value) || 1;
       if (!document.getElementById("randomCheck").checked) min = max;
+
+      // 確保 min 不會低於 1
+      if (min < 1) min = 1; 
+      if (max < min) max = min;
       
-      const nextTime = (Math.random() * (max - Math.min(min, max)) + Math.min(min, max)) * 1000;
+      const nextTime = (Math.random() * (max - min) + min) * 1000;
       timerId = setTimeout(playCycle, nextTime);
     }
 
