@@ -171,23 +171,25 @@
   </div>
 
   <script>
+    // 修改後的資源對應表
     const sounds = {
       move: {
-        1: ["sounds/move1.mp3","sounds/move2.mp3","sounds/move3.mp3","sounds/move4.mp3"],
-        2: ["move1.mp3", "move2.mp3"],
-        3: ["move1.mp3", "move2.mp3", "move3.mp3"],
+        1: [
+          { audio: "sounds/move1.mp3", img: "image/move1.png" },
+          { audio: "sounds/move2.mp3", img: "image/move2.png" },
+          { audio: "sounds/move3.mp3", img: "image/move3.png" },
+          { audio: "sounds/move4.mp3", img: "image/move4.png" }
+        ],
+        2: [
+          { audio: "move1.mp3", img: "move1.png" },
+          { audio: "move2.mp3", img: "move2.png" }
+        ],
+        // ...以此類推
       },
       dodge: {
-        1: ["dodge1.mp3"],
-        2: ["dodge1.mp3", "dodge2.mp3"],
-        3: ["dodge1.mp3", "dodge2.mp3", "dodge3.mp3"],
-      },
-    };
-
-    // 圖片對應 (請確保檔案存在)
-    const images = {
-      move: "move.jpg",
-      dodge: "dodge.jpg"
+        1: [{ audio: "dodge1.mp3", img: "dodge1.png" }],
+        // ...以此類推
+      }
     };
 
     let timerId = null;
@@ -208,40 +210,34 @@
 
     function playAction() {
       const choices = [];
-      if (isActive.move) choices.push({ type: 'move', list: sounds.move[document.getElementById("levelMove").value] });
-      if (isActive.dodge) choices.push({ type: 'dodge', list: sounds.dodge[document.getElementById("levelDodge").value] });
+      // 根據勾選狀態與等級抓取資料集 [cite: 49, 50, 51]
+      if (isActive.move) {
+        const level = document.getElementById("levelMove").value;
+        choices.push(...sounds.move[level]);
+      }
+      if (isActive.dodge) {
+        const level = document.getElementById("levelDodge").value;
+        choices.push(...sounds.dodge[level]);
+      }
       
       if (choices.length === 0) return;
-
-      const action = choices[Math.floor(Math.random() * choices.length)];
-      const soundFile = action.list[Math.floor(Math.random() * action.list.length)];
+    
+      // 隨機抽選一個資源物件 [cite: 51]
+      const selected = choices[Math.floor(Math.random() * choices.length)];
       
-      // 顯示圖片 
-      displayImg.src = images[action.type];
+      // 1. 同步顯示對應圖片
+      const displayImg = document.getElementById("displayImg");
+      displayImg.src = selected.img; // 這裡會變成 move1.png [cite: 52]
       displayImg.style.display = "block";
-      placeholderText.style.display = "none";
-
-      // 播放音效 
-      const audio = new Audio(soundFile);
+      document.getElementById("placeholderText").style.display = "none";
+    
+      // 2. 播放對應音效 [cite: 52]
+      const audio = new Audio(selected.audio);
       audio.play().catch(() => {});
       
+      // ...後續計數與計時邏輯 [cite: 61, 71, 72]
       playedCount++;
       updateStatus();
-      
-      // 檢查停止條件 [cite: 69, 70, 71]
-      const maxCount = parseInt(document.getElementById("stopCount").value);
-      const maxMin = parseFloat(document.getElementById("stopMin").value);
-      
-      if (maxCount > 0 && playedCount >= maxCount) {
-        stopTraining();
-        return;
-      }
-      if (maxMin > 0 && (Date.now() - startTime) / 60000 >= maxMin) {
-        stopTraining();
-        return;
-      }
-
-      // 核心修改：每一聲後重新計算下一次的隨機秒數 
       timerId = setTimeout(playAction, getNextInterval());
     }
 
