@@ -14,7 +14,6 @@
       min-height: 100vh;
     }
 
-    /* 容器：用 flex 讓手機直式與橫式、平板、電腦都能自動適配 */
     .container {
       max-width: 700px;
       margin: 0 auto;
@@ -30,7 +29,26 @@
       border: 1px solid #333;
     }
 
-    /* 按鈕列 */
+    /* 圖片顯示區塊 */
+    .image-display-area {
+      width: 100%;
+      height: 250px;
+      background-color: #222;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    #displayImg {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      display: none; /* 初始隱藏 */
+    }
+
     .btn-row {
       display: flex;
       flex-wrap: wrap;
@@ -45,55 +63,19 @@
       border-radius: 8px;
       cursor: pointer;
       color: #fff;
-      position: relative;
+      transition: all 0.2s;
     }
 
-    #btnMove {
-      background: #3b82f6;
-      box-shadow: 0 0 10px rgba(59, 130, 246, 0.3);
-    }
-    #btnDodge {
-      background: #10b981;
-      box-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
-    }
+    #btnMove { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+    #btnDodge { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
 
-    /* 開啟狀態：發光變亮 */
-    .btn-toggle.active {
-      filter: brightness(1.4);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
-    }
+    .btn-toggle.active { filter: brightness(1.4); box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+    .btn-toggle.inactive { filter: brightness(0.6); opacity: 0.5; }
 
-    .btn-toggle.inactive {
-      filter: brightness(0.7);
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
-    }
+    .level-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; }
+    .level-group { display: flex; align-items: center; gap: 6px; }
 
-    .btn-toggle:active {
-      transform: scale(0.98);
-    }
-
-    /* 下拉與標籤 */
-    .level-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      justify-content: center;
-      margin-top: 12px;
-    }
-
-    .level-group {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    label {
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    select,
-    input {
+    select, input {
       font-size: 16px;
       padding: 6px 10px;
       background-color: #222;
@@ -102,105 +84,42 @@
       border-radius: 6px;
     }
 
-    input[type="number"] {
-      width: 90px;
-    }
+    input[type="number"] { width: 70px; }
+    .hint { font-size: 12px; color: #888; text-align: center; margin-top: 6px; }
 
-    .hint {
-      font-size: 12px;
-      color: #888;
-      text-align: center;
-      margin-top: 6px;
-    }
-
-    /* 隨機區塊 */
-    .random-row {
+    .random-row, .stop-row {
       display: flex;
       flex-wrap: wrap;
       gap: 12px;
       align-items: center;
       justify-content: center;
+      margin-top: 10px;
     }
 
-    .random-row input[type="number"] {
-      width: 60px;
-    }
+    #btnStart { background: #f97316; }
+    #btnStop { background: #ef4444; }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    .random-row span.unit {
-      font-size: 14px;
-      white-space: nowrap;
-    }
-
-    .random-row input[type="checkbox"] {
-      transform: scale(1.2);
-    }
-
-    /* 停止條件 */
-    .stop-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .stop-row input[type="number"] {
-      width: 60px;
-    }
-
-    .stop-row button {
-      font-size: 16px;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      color: #fff;
-    }
-
-    #btnStart {
-      background: #f97316;
-      box-shadow: 0 0 8px rgba(249, 115, 16, 0.4);
-    }
-
-    #btnStop {
-      background: #ef4444;
-      box-shadow: 0 0 8px rgba(239, 68, 68, 0.4);
-    }
-
-    #btnStart:disabled,
-    #btnStop:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .status {
-      text-align: center;
-      font-size: 14px;
-      color: #888;
-      margin: 12px 0;
-    }
-
-    /* 手機直式 / 橫式、板 / 電腦都自動適配 */
-    @media (min-width: 768px) {
-      .btn-row,
-      .level-row,
-      .random-row,
-      .stop-row {
-        flex-direction: row;
-      }
-    }
+    .status { text-align: center; font-size: 14px; color: #888; margin: 12px 0; }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="group">
+      <div class="image-display-area">
+        <img id="displayImg" src="" alt="動作提示">
+        <div id="placeholderText" style="color:#555;">等待開始...</div>
+      </div>
+    </div>
+
+    <div class="group">
       <div class="btn-row">
-        <button id="btnMove" class="btn-toggle btn-move inactive" type="button">移動</button>
-        <button id="btnDodge" class="btn-toggle btn-dodge inactive" type="button">閃躲</button>
+        <button id="btnMove" class="btn-toggle inactive" type="button">移動</button>
+        <button id="btnDodge" class="btn-toggle inactive" type="button">閃躲</button>
       </div>
       <div class="level-row">
         <div class="level-group">
-          <label for="levelMove">移動等級：</label>
+          <label>移動等級：</label>
           <select id="levelMove">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -208,7 +127,7 @@
           </select>
         </div>
         <div class="level-group">
-          <label for="levelDodge">閃躲等級：</label>
+          <label>閃躲等級：</label>
           <select id="levelDodge">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -219,73 +138,42 @@
     </div>
 
     <div class="group">
-      <div class="input-row" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
+      <div class="btn-row" style="align-items: center;">
         <label for="fixedSec">秒數：</label>
-        <input
-          type="number"
-          id="fixedSec"
-          min="0.3"
-          max="5"
-          step="0.1"
-          value="3"
-        />
-        <span class="unit">秒</span>
+        <input type="number" id="fixedSec" min="0.3" max="5" step="0.1" value="3" />
+        <span>秒</span>
       </div>
-      <div class="hint">請輸入 0.3～5 秒</div>
-
       <div class="random-row">
-        <label>
-          <input type="checkbox" id="randomCheck" />
-          <span>隨機</span>
-        </label>
-        <div id="randomRange" style="display: none; display: flex; gap: 4px; align-items: center;">
-          <input
-            type="number"
-            id="minSec"
-            min="0.3"
-            max="5"
-            step="0.1"
-            placeholder="起"
-          />
-          <span>起</span>
+        <label><input type="checkbox" id="randomCheck" /> 隨機</label>
+        <div id="randomRange" style="display: none; align-items: center; gap: 5px;">
+          <span>起：</span>
+          <input type="number" id="minSec" min="0.3" max="5" step="0.1" placeholder="0.5" />
         </div>
       </div>
+      <div class="hint">請輸入 0.3～5 秒（隨機未填預設 0.5）</div>
     </div>
 
     <div class="group">
       <div class="stop-row">
-        <label for="stopCount">停止條件：</label>
-        <input
-          type="number"
-          id="stopCount"
-          placeholder="次"
-        />
-        <span>次</span>
-        <span>或</span>
-        <input
-          type="number"
-          id="stopMin"
-          placeholder="分"
-        />
-        <span>分</span>
+        <label>停止：</label>
+        <input type="number" id="stopCount" placeholder="次數" /> <span>次</span>
+        <input type="number" id="stopMin" placeholder="分鐘" /> <span>分</span>
       </div>
-      <div class="hint">若皆不填，則一直執行</div>
     </div>
 
     <div class="group">
       <div class="btn-row">
-        <button id="btnStart" type="button">開始</button>
-        <button id="btnStop" type="button" disabled>停止</button>
+        <button id="btnStart" type="button" style="padding:10px 30px; border-radius:8px; border:none; color:white;">開始</button>
+        <button id="btnStop" type="button" disabled style="padding:10px 30px; border-radius:8px; border:none; color:white;">停止</button>
       </div>
       <div class="status" id="statusText">待機中</div>
     </div>
   </div>
 
   <script>
-    // 音效檔對應表（可依你實際檔名調整）
     const sounds = {
       move: {
-        1: ["sounds/move1.mp3","sounds/move2.mp3","sounds/move3.mp3","sounds/move4.mp3",],
+        1: ["sounds/move1.mp3","sounds/move2.mp3","sounds/move3.mp3","sounds/move4.mp3"],
         2: ["move1.mp3", "move2.mp3"],
         3: ["move1.mp3", "move2.mp3", "move3.mp3"],
       },
@@ -296,195 +184,115 @@
       },
     };
 
-    // DOM 元件
-    const btnMove = document.getElementById("btnMove");
-    const btnDodge = document.getElementById("btnDodge");
-    const levelMove = document.getElementById("levelMove");
-    const levelDodge = document.getElementById("levelDodge");
-    const fixedSec = document.getElementById("fixedSec");
-    const randomCheck = document.getElementById("randomCheck");
-    const randomRange = document.getElementById("randomRange");
-    const minSec = document.getElementById("minSec");
-    const stopCount = document.getElementById("stopCount");
-    const stopMin = document.getElementById("stopMin");
-    const btnStart = document.getElementById("btnStart");
-    const btnStop = document.getElementById("btnStop");
-    const statusText = document.getElementById("statusText");
-
-    // 開關狀態
-    let isActive = {
-      move: false,
-      dodge: false,
+    // 圖片對應 (請確保檔案存在)
+    const images = {
+      move: "move.jpg",
+      dodge: "dodge.jpg"
     };
 
-    // 計時器與計數器
-    let intervalId = null;
+    let timerId = null;
     let playedCount = 0;
     let startTime = null;
+    let isActive = { move: false, dodge: false };
 
-    // 更新按鈕外觀
+    const btnMove = document.getElementById("btnMove");
+    const btnDodge = document.getElementById("btnDodge");
+    const displayImg = document.getElementById("displayImg");
+    const placeholderText = document.getElementById("placeholderText");
+    const statusText = document.getElementById("statusText");
+
     function updateBtnState() {
-      btnMove.classList.toggle("active", isActive.move);
-      btnMove.classList.toggle("inactive", !isActive.move);
-      btnDodge.classList.toggle("active", isActive.dodge);
-      btnDodge.classList.toggle("inactive", !isActive.dodge);
+      btnMove.className = `btn-toggle ${isActive.move ? 'active' : 'inactive'}`;
+      btnDodge.className = `btn-toggle ${isActive.dodge ? 'active' : 'inactive'}`;
     }
 
-    // 撥放音效
-    function playRandomSound() {
+    function playAction() {
       const choices = [];
-      if (isActive.move) {
-        const level = Number(levelMove.value);
-        choices.push(...sounds.move[level]);
-      }
-      if (isActive.dodge) {
-        const level = Number(levelDodge.value);
-        choices.push(...sounds.dodge[level]);
-      }
+      if (isActive.move) choices.push({ type: 'move', list: sounds.move[document.getElementById("levelMove").value] });
+      if (isActive.dodge) choices.push({ type: 'dodge', list: sounds.dodge[document.getElementById("levelDodge").value] });
+      
       if (choices.length === 0) return;
 
-      const index = Math.floor(Math.random() * choices.length);
-      const audio = new Audio(choices[index]);
+      const action = choices[Math.floor(Math.random() * choices.length)];
+      const soundFile = action.list[Math.floor(Math.random() * action.list.length)];
+      
+      // 顯示圖片 
+      displayImg.src = images[action.type];
+      displayImg.style.display = "block";
+      placeholderText.style.display = "none";
+
+      // 播放音效 
+      const audio = new Audio(soundFile);
       audio.play().catch(() => {});
-    }
-
-    // 隨機產生下次時間（毫秒）
-    function getNextInterval() {
-      let min = 0.3;
-      let max = 5;
-
-      if (randomCheck.checked) {
-        const inputMin = Number(minSec.value);
-        if (!isNaN(inputMin) && inputMin >= 0.3 && inputMin <= 4.9) {
-          min = inputMin;
-        }
+      
+      playedCount++;
+      updateStatus();
+      
+      // 檢查停止條件 [cite: 69, 70, 71]
+      const maxCount = parseInt(document.getElementById("stopCount").value);
+      const maxMin = parseFloat(document.getElementById("stopMin").value);
+      
+      if (maxCount > 0 && playedCount >= maxCount) {
+        stopTraining();
+        return;
+      }
+      if (maxMin > 0 && (Date.now() - startTime) / 60000 >= maxMin) {
+        stopTraining();
+        return;
       }
 
-      const inputValue = Number(fixedSec.value);
-      if (!isNaN(inputValue) && inputValue >= 0.3 && inputValue <= 5) {
-        max = inputValue;
+      // 核心修改：每一聲後重新計算下一次的隨機秒數 
+      timerId = setTimeout(playAction, getNextInterval());
+    }
+
+    function getNextInterval() {
+      let max = parseFloat(document.getElementById("fixedSec").value) || 3;
+      let min = 0.5; // 預設 0.5 [cite: 53]
+
+      if (document.getElementById("randomCheck").checked) {
+        const inputMin = parseFloat(document.getElementById("minSec").value);
+        if (!isNaN(inputMin)) min = inputMin; // 若有輸入則覆蓋 [cite: 54, 55]
+      } else {
+        return max * 1000; // 非隨機模式
       }
 
       if (min > max) min = max;
-
-      const range = max - min;
-      const random = Math.random() * range + min;
-      return random * 1000;
+      return (Math.random() * (max - min) + min) * 1000; [cite: 58]
     }
 
-    // 更新狀態文字
     function updateStatus() {
-      if (!intervalId) {
-        statusText.textContent = "待機中";
-        return;
-      }
-
-      let msg = "播放中";
-      if (playedCount > 0) {
-        msg += `，已播 ${playedCount} 次`;
-      }
-      if (startTime) {
-        const diff = (Date.now() - startTime) / 1000;
-        const mins = Math.floor(diff / 60);
-        const secs = Math.floor(diff % 60);
-        msg += `（約 ${mins} 分 ${secs} 秒）`;
-      }
-      statusText.textContent = msg;
+      if (!startTime) { statusText.textContent = "待機中"; return; }
+      const diff = Math.floor((Date.now() - startTime) / 1000);
+      statusText.textContent = `播放中，已播 ${playedCount} 次（約 ${Math.floor(diff/60)}分 ${diff%60}秒）`; [cite: 61, 63]
     }
 
-    // 開始
-    btnStart.onclick = function () {
-      if (intervalId) return;
-
-      const minVal = Number(minSec.value);
-      const secVal = Number(fixedSec.value);
-      const cntVal = Number(stopCount.value);
-      const minVal2 = Number(stopMin.value);
-
-      if (
-        (isNaN(secVal) || secVal < 0.3 || secVal > 5) ||
-        (randomCheck.checked && (isNaN(minVal) || minVal < 0.3))
-      ) {
-        alert("請輸入 0.3～5 秒");
-        return;
-      }
-
-      if (!isActive.move && !isActive.dodge) {
-        alert("請至少開啟「移動」或「閃躲」其中一個");
-        return;
-      }
-
-      // 重置狀態
+    document.getElementById("btnStart").onclick = function() {
+      if (!isActive.move && !isActive.dodge) { alert("請先開啟移動或閃躲"); return; }
       playedCount = 0;
       startTime = Date.now();
-
-      // 設定計時器
-      playRandomSound();
-      intervalId = setInterval(() => {
-        // 檢查次數停止
-        if (!isNaN(cntVal) && cntVal > 0 && playedCount >= cntVal) {
-          clearInterval(intervalId);
-          intervalId = null;
-          btnStart.disabled = false;
-          btnStop.disabled = true;
-          updateStatus();
-          return;
-        }
-
-        // 檢查分鐘停止
-        if (!isNaN(minVal2) && minVal2 > 0) {
-          const elapsed = Date.now() - startTime;
-          const minutes = elapsed / 1000 / 60;
-          if (minutes >= minVal2) {
-            clearInterval(intervalId);
-            intervalId = null;
-            btnStart.disabled = false;
-            btnStop.disabled = true;
-            updateStatus();
-            return;
-          }
-        }
-
-        playRandomSound();
-        playedCount++;
-        updateStatus();
-      }, getNextInterval());
-
-      btnStart.disabled = true;
-      btnStop.disabled = false;
-      updateStatus();
+      this.disabled = true;
+      document.getElementById("btnStop").disabled = false;
+      playAction();
     };
 
-    // 停止
-    btnStop.onclick = function () {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-        btnStart.disabled = false;
-        btnStop.disabled = true;
-        updateStatus();
-      }
+    function stopTraining() {
+      clearTimeout(timerId);
+      timerId = null;
+      document.getElementById("btnStart").disabled = false;
+      document.getElementById("btnStop").disabled = true;
+      displayImg.style.display = "none";
+      placeholderText.style.display = "block";
+      placeholderText.textContent = "訓練結束";
+    }
+
+    document.getElementById("btnStop").onclick = stopTraining;
+    btnMove.onclick = () => { isActive.move = !isActive.move; updateBtnState(); };
+    btnDodge.onclick = () => { isActive.dodge = !isActive.dodge; updateBtnState(); };
+    document.getElementById("randomCheck").onchange = function() {
+      document.getElementById("randomRange").style.display = this.checked ? "flex" : "none";
     };
 
-    // 開關按鈕
-    btnMove.onclick = function () {
-      isActive.move = !isActive.move;
-      updateBtnState();
-    };
-
-    btnDodge.onclick = function () {
-      isActive.dodge = !isActive.dodge;
-      updateBtnState();
-    };
-
-    // 隨機區塊顯示/隱藏
-    randomCheck.onchange = function () {
-      randomRange.style.display = this.checked ? "flex" : "none";
-    };
-
-    // 初始狀態
     updateBtnState();
-    updateStatus();
   </script>
 </body>
 </html>
