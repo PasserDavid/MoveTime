@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>動起來！！！</title>
   <style>
+    /* 保留原始樣式，確保畫面不跑掉 [cite: 1, 3] */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background-color: #000; [cite: 2]
+      background-color: #000;
       color: #fff;
       margin: 0;
       padding: 20px;
@@ -16,14 +17,14 @@
 
     .container {
       max-width: 700px;
-      margin: 0 auto; [cite: 4]
+      margin: 0 auto;
       display: flex;
       flex-direction: column;
       gap: 16px;
       position: relative;
     }
 
-    /* 浮動圖片：出現在畫面中央，不佔位 */
+    /* 浮動圖片：出現在畫面中央，不影響原本 UI 排版 */
     #actionImg {
       position: fixed;
       top: 50%;
@@ -33,88 +34,63 @@
       max-width: 80%;
       max-height: 70vh;
       display: none;
-      pointer-events: none; /* 確保不影響按鈕點擊 */
+      pointer-events: none; /* 確保不影響點擊下方按鈕 */
     }
 
     .group {
       background-color: #111;
-      border-radius: 10px; [cite: 5]
+      border-radius: 10px;
       padding: 16px;
       border: 1px solid #333;
     }
 
     .btn-row {
       display: flex;
-      flex-wrap: wrap; [cite: 6]
+      flex-wrap: wrap;
       gap: 12px;
       justify-content: center;
     }
 
+    /* 恢復點按效果與發光樣式 [cite: 7, 8, 11, 13] */
     .btn-toggle {
       padding: 12px 20px;
-      font-size: 18px; [cite: 7]
+      font-size: 18px;
       border: none;
       border-radius: 8px;
       cursor: pointer;
       color: #fff;
-      position: relative;
+      transition: transform 0.1s, filter 0.2s; /* 平滑過渡 */
     }
 
-    #btnMove { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); } [cite: 9]
-    #btnDodge { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); } [cite: 10]
+    #btnMove { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
+    #btnDodge { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
 
     .btn-toggle.active {
       filter: brightness(1.4);
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); [cite: 11]
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
     }
 
     .btn-toggle.inactive {
       filter: brightness(0.7);
-      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1); [cite: 12]
+      opacity: 0.5;
     }
 
-    .btn-toggle:active { transform: scale(0.98); } [cite: 13]
-
-    .level-row {
-      display: flex;
-      flex-wrap: wrap; [cite: 14]
-      gap: 12px;
-      justify-content: center;
-      margin-top: 12px;
+    .btn-toggle:active {
+      transform: scale(0.95); /* 點按縮放效果 [cite: 13] */
     }
 
-    .level-group { display: flex; align-items: center; gap: 6px; } [cite: 15]
+    .level-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; }
+    .level-group { display: flex; align-items: center; gap: 6px; }
+    select, input { font-size: 16px; padding: 6px 10px; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 6px; }
+    input[type="number"] { width: 90px; }
+    .hint { font-size: 12px; color: #888; text-align: center; margin-top: 6px; }
 
-    select, input {
-      font-size: 16px;
-      padding: 6px 10px;
-      background-color: #222; [cite: 17]
-      color: #fff;
-      border: 1px solid #555;
-      border-radius: 6px;
-    }
+    #btnStart { background: #f97316; padding: 10px 30px; border-radius: 8px; border: none; color: white; cursor: pointer; }
+    #btnStop { background: #ef4444; padding: 10px 30px; border-radius: 8px; border: none; color: white; cursor: pointer; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .status { text-align: center; font-size: 14px; color: #888; margin: 12px 0; }
 
-    input[type="number"] { width: 90px; } [cite: 19]
-
-    .hint { font-size: 12px; color: #888; text-align: center; margin-top: 6px; } [cite: 20]
-
-    .random-row, .stop-row {
-      display: flex;
-      flex-wrap: wrap; [cite: 21, 25]
-      gap: 12px;
-      align-items: center;
-      justify-content: center;
-    }
-
-    #btnStart { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 16, 0.4); } [cite: 28]
-    #btnStop { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); } [cite: 29]
-    button:disabled { opacity: 0.6; cursor: not-allowed; } [cite: 30]
-
-    .status { text-align: center; font-size: 14px; color: #888; margin: 12px 0; } [cite: 31]
-
-    @media (min-width: 768px) {
-      .btn-row, .level-row, .random-row, .stop-row { flex-direction: row; } [cite: 32]
-    }
+    @media (min-width: 768px) { .btn-row, .level-row, .random-row, .stop-row { flex-direction: row; } }
   </style>
 </head>
 <body>
@@ -128,7 +104,7 @@
       </div>
       <div class="level-row">
         <div class="level-group">
-          <label for="levelMove">移動等級：</label>
+          <label>移動等級：</label>
           <select id="levelMove">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -136,7 +112,7 @@
           </select>
         </div>
         <div class="level-group">
-          <label for="levelDodge">閃躲等級：</label>
+          <label>閃躲等級：</label>
           <select id="levelDodge">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -147,15 +123,15 @@
     </div>
 
     <div class="group">
-      <div class="input-row" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
-        <label for="fixedSec">秒數：</label>
+      <div class="btn-row" style="align-items: center;">
+        <label>秒數：</label>
         <input type="number" id="fixedSec" min="0.3" max="5" step="0.1" value="3" />
-        <span class="unit">秒</span>
+        <span>秒</span>
       </div>
       <div class="hint">請輸入 0.3～5 秒</div>
-      <div class="random-row">
-        <label><input type="checkbox" id="randomCheck" /> <span>隨機</span></label>
-        <div id="randomRange" style="display: none; gap: 4px; align-items: center;">
+      <div class="btn-row" style="margin-top: 10px;">
+        <label><input type="checkbox" id="randomCheck" /> 隨機</label>
+        <div id="randomRange" style="display: none; align-items: center; gap: 4px; margin-left: 10px;">
           <input type="number" id="minSec" min="0.3" max="5" step="0.1" placeholder="0.5" />
           <span>起</span>
         </div>
@@ -163,122 +139,77 @@
     </div>
 
     <div class="group">
-      <div class="stop-row">
-        <label for="stopCount">停止條件：</label>
-        <input type="number" id="stopCount" placeholder="次" /> <span>次</span>
-        <span>或</span>
-        <input type="number" id="stopMin" placeholder="分" /> <span>分</span>
+      <div class="btn-row">
+        <label>停止條件：</label>
+        <input type="number" id="stopCount" placeholder="次" style="width: 60px;"/> 次 或 
+        <input type="number" id="stopMin" placeholder="分" style="width: 60px;"/> 分
       </div>
-      <div class="hint">若皆不填，則一直執行</div>
     </div>
 
     <div class="group">
       <div class="btn-row">
-        <button id="btnStart" type="button" style="padding: 10px 30px; border-radius: 8px; border:none; color:white; cursor:pointer;">開始</button>
-        <button id="btnStop" type="button" disabled style="padding: 10px 30px; border-radius: 8px; border:none; color:white; cursor:pointer;">停止</button>
+        <button id="btnStart" type="button">開始</button>
+        <button id="btnStop" type="button" disabled>停止</button>
       </div>
       <div class="status" id="statusText">待機中</div>
     </div>
   </div>
 
   <script>
-    // 資料對應：音效與圖片(png)均放在 image/ 資料夾
+    // 依指定規則設定資源路徑與對應 [cite: 41]
     const resources = {
       move: {
-        1: [
-          { a: "sounds/move1.mp3", i: "image/move1.png" },
-          { a: "sounds/move2.mp3", i: "image/move2.png" },
-          { a: "sounds/move3.mp3", i: "image/move3.png" },
-          { a: "sounds/move4.mp3", i: "image/move4.png" }
-        ],
-        2: [
-          { a: "sounds/move5.mp3", i: "image/move5.png" },
-          { a: "sounds/move6.mp3", i: "image/move6.png" }
-        ],
-        3: [
-          { a: "sounds/move7.mp3", i: "image/move7.png" },
-          { a: "sounds/move8.mp3", i: "image/move8.png" },
-          { a: "sounds/move9.mp3", i: "image/move9.png" }
-        ],
+        1: [1,2,3,4].map(n => ({ a: `sounds/move${n}.mp3`, i: `image/move${n}.png` })),
+        2: [5,6].map(n => ({ a: `sounds/move${n}.mp3`, i: `image/move${n}.png` })),
+        3: [7,8,9].map(n => ({ a: `sounds/move${n}.mp3`, i: `image/move${n}.png` }))
       },
       dodge: {
-        1: [{ a: "sounds/dodge1.mp3", i: "image/dodge1.png" }],
-        2: [
-          { a: "sounds/dodge1.mp3", i: "image/dodge1.png" },
-          { a: "sounds/dodge2.mp3", i: "image/dodge2.png" }
-        ],
-        3: [
-          { a: "sounds/dodge1.mp3", i: "image/dodge1.png" },
-          { a: "sounds/dodge2.mp3", i: "image/dodge2.png" },
-          { a: "sounds/dodge3.mp3", i: "image/dodge3.png" }
-        ],
-      },
+        1: [1,2,3,4].map(n => ({ a: `sounds/dodge${n}.mp3`, i: `image/dodge${n}.png` })),
+        2: [5,6].map(n => ({ a: `sounds/dodge${n}.mp3`, i: `image/dodge${n}.png` })),
+        3: [7,8,9].map(n => ({ a: `sounds/dodge${n}.mp3`, i: `image/dodge${n}.png` }))
+      }
     };
-
-    const actionImg = document.getElementById("actionImg");
-    const btnMove = document.getElementById("btnMove");
-    const btnDodge = document.getElementById("btnDodge");
-    const btnStart = document.getElementById("btnStart");
-    const btnStop = document.getElementById("btnStop");
-    const statusText = document.getElementById("statusText");
 
     let timerId = null;
     let playedCount = 0;
     let startTime = null;
     let isActive = { move: false, dodge: false };
 
-    function updateBtnState() {
-      btnMove.classList.toggle("active", isActive.move);
-      btnMove.classList.toggle("inactive", !isActive.move);
-      btnDodge.classList.toggle("active", isActive.dodge);
-      btnDodge.classList.toggle("inactive", !isActive.dodge);
-    }
+    const actionImg = document.getElementById("actionImg");
+    const statusText = document.getElementById("statusText");
+    const btnStart = document.getElementById("btnStart");
+    const btnStop = document.getElementById("btnStop");
 
-    // 更新狀態文字 [cite: 64]
-    function updateStatus() {
-      if (!timerId && playedCount === 0) {
-        statusText.textContent = "待機中";
-        return;
-      }
-      let msg = `播放中，已播 ${playedCount} 次`;
-      if (startTime) {
-        const diff = (Date.now() - startTime) / 1000;
-        msg += `（約 ${Math.floor(diff / 60)} 分 ${Math.floor(diff % 60)} 秒）`;
-      }
-      statusText.textContent = msg;
-    }
+    function playCycle() {
+      // 停止條件檢查 [cite: 70, 71]
+      const maxCount = parseInt(document.getElementById("stopCount").value);
+      const maxMin = parseFloat(document.getElementById("stopMin").value);
+      if (maxCount > 0 && playedCount >= maxCount) return stopTraining();
+      if (maxMin > 0 && (Date.now() - startTime) / 60000 >= maxMin) return stopTraining();
 
-    // 核心循環：使用 setTimeout 達成每一聲隨機 
-    function startTrainingLoop() {
-      // 檢查停止條件 [cite: 70, 71]
-      const cntLimit = parseInt(document.getElementById("stopCount").value);
-      const minLimit = parseFloat(document.getElementById("stopMin").value);
-      if (cntLimit > 0 && playedCount >= cntLimit) return stopTraining();
-      if (minLimit > 0 && (Date.now() - startTime) / 60000 >= minLimit) return stopTraining();
-
-      // 決定動作
       const choices = [];
       if (isActive.move) choices.push(...resources.move[document.getElementById("levelMove").value]);
       if (isActive.dodge) choices.push(...resources.dodge[document.getElementById("levelDodge").value]);
-
+      
       if (choices.length === 0) return stopTraining();
 
+      // 隨機抽選
       const item = choices[Math.floor(Math.random() * choices.length)];
       
-      // 顯示圖片與音效
+      // 更新顯示圖片與播放音效 [cite: 52]
       actionImg.src = item.i;
       actionImg.style.display = "block";
       new Audio(item.a).play().catch(() => {});
 
       playedCount++;
-      updateStatus();
+      updateStatusDisplay();
 
-      // 計算下一次的時間
+      // 每一次重新計算下次間隔時間 [cite: 58, 59]
       let max = parseFloat(document.getElementById("fixedSec").value) || 3;
-      let min = 0.5; // 隨機預設 0.5 [cite: 52]
+      let min = 0.5; // 隨機未填預設 0.5
       if (document.getElementById("randomCheck").checked) {
-        let inputMin = parseFloat(document.getElementById("minSec").value);
-        if (!isNaN(inputMin)) min = inputMin;
+        let val = parseFloat(document.getElementById("minSec").value);
+        if (!isNaN(val)) min = val;
       } else {
         min = max;
       }
@@ -286,18 +217,22 @@
       if (min > max) min = max;
       const nextTime = (Math.random() * (max - min) + min) * 1000;
 
-      timerId = setTimeout(startTrainingLoop, nextTime);
+      timerId = setTimeout(playCycle, nextTime);
     }
 
-    btnStart.onclick = function () {
+    function updateStatusDisplay() {
+      const diff = Math.floor((Date.now() - startTime) / 1000);
+      statusText.textContent = `播放中：已播 ${playedCount} 次（${Math.floor(diff/60)}分${diff%60}秒）`;
+    }
+
+    btnStart.onclick = function() {
       if (timerId) return;
       if (!isActive.move && !isActive.dodge) return alert("請開啟移動或閃躲");
-      
       playedCount = 0;
       startTime = Date.now();
       btnStart.disabled = true;
       btnStop.disabled = false;
-      startTrainingLoop();
+      playCycle();
     };
 
     function stopTraining() {
@@ -306,17 +241,24 @@
       btnStart.disabled = false;
       btnStop.disabled = true;
       statusText.textContent = "待機中";
-      actionImg.style.display = "none"; // 停止時隱藏圖片
+      actionImg.style.display = "none";
     }
 
     btnStop.onclick = stopTraining;
-    btnMove.onclick = () => { isActive.move = !isActive.move; updateBtnState(); };
-    btnDodge.onclick = () => { isActive.dodge = !isActive.dodge; updateBtnState(); };
+
+    document.getElementById("btnMove").onclick = function() {
+      isActive.move = !isActive.move;
+      this.className = `btn-toggle ${isActive.move ? 'active' : 'inactive'}`;
+    };
+
+    document.getElementById("btnDodge").onclick = function() {
+      isActive.dodge = !isActive.dodge;
+      this.className = `btn-toggle ${isActive.dodge ? 'active' : 'inactive'}`;
+    };
+
     document.getElementById("randomCheck").onchange = function() {
       document.getElementById("randomRange").style.display = this.checked ? "flex" : "none";
     };
-
-    updateBtnState();
   </script>
 </body>
 </html>
