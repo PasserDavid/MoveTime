@@ -189,6 +189,24 @@
         flex-direction: row;
       }
     }
+    .image-stage {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 180px;
+      margin-top: 12px;
+    }
+    
+    .cue-image {
+      max-width: 100%;
+      width: min(80vw, 320px);
+      max-height: 36vh;
+      object-fit: contain;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 0 18px rgba(255, 255, 255, 0.12);
+      background: #111;
+    }
   </style>
 </head>
 <body>
@@ -278,6 +296,9 @@
         <button id="btnStop" type="button" disabled>停止</button>
       </div>
       <div class="status" id="statusText">待機中</div>
+      <div id="imageStage" class="image-stage" style="display: none;">
+        <img id="cueImage" class="cue-image" src="" alt="提示圖片" />
+      </div>
     </div>
   </div>
 
@@ -295,6 +316,15 @@
         3: ["dodge1.mp3", "dodge2.mp3", "dodge3.mp3"],
       },
     };
+    const soundImages = {
+      "sounds/move1.mp3": "images/move1.png",
+      "sounds/move2.mp3": "images/move2.png",
+      "sounds/move3.mp3": "images/move3.png",
+      "sounds/dodge1.mp3": "images/dodge1.png",
+      "sounds/dodge2.mp3": "images/dodge2.png",
+      "sounds/dodge3.mp3": "images/dodge3.png",
+    };
+
 
     // DOM 元件
     const btnMove = document.getElementById("btnMove");
@@ -310,6 +340,9 @@
     const btnStart = document.getElementById("btnStart");
     const btnStop = document.getElementById("btnStop");
     const statusText = document.getElementById("statusText");
+    const imageStage = document.getElementById("imageStage");
+    const cueImage = document.getElementById("cueImage");
+
 
     // 開關狀態
     let isActive = {
@@ -330,43 +363,55 @@
       btnDodge.classList.toggle("inactive", !isActive.dodge);
     }
 
-    // 撥放音效
+    // 撥放音效 及 對應圖片
     function playRandomSound() {
       const choices = [];
+    
       if (isActive.move) {
         const level = Number(levelMove.value);
         choices.push(...sounds.move[level]);
       }
+    
       if (isActive.dodge) {
         const level = Number(levelDodge.value);
         choices.push(...sounds.dodge[level]);
       }
-      if (choices.length === 0) return;
-
+    
+      if (choices.length === 0) return false;
+    
       const index = Math.floor(Math.random() * choices.length);
-      const audio = new Audio(choices[index]);
+      const selectedSound = choices[index];
+    
+      showImageForSound(selectedSound);
+    
+      const audio = new Audio(selectedSound);
       audio.play().catch(() => {});
+    
+      return true;
     }
+
 
     // 隨機產生下次時間（毫秒）
     function getNextInterval() {
-      let min = 0.3;
+      let min = randomCheck.checked ? 0.5 : 0.3;
       let max = 5;
-
-      if (randomCheck.checked) {
-        const inputMin = Number(minSec.value);
-        if (!isNaN(inputMin) && inputMin >= 0.3 && inputMin <= 4.9) {
-          min = inputMin;
-        }
-      }
-
+    
       const inputValue = Number(fixedSec.value);
       if (!isNaN(inputValue) && inputValue >= 0.3 && inputValue <= 5) {
         max = inputValue;
       }
-
+    
+      if (randomCheck.checked) {
+        const rawMin = minSec.value.trim();
+        const inputMin = Number(rawMin);
+    
+        if (rawMin !== "" && !isNaN(inputMin) && inputMin >= 0.3 && inputMin <= 5) {
+          min = inputMin;
+        }
+      }
+    
       if (min > max) min = max;
-
+    
       const range = max - min;
       const random = Math.random() * range + min;
       return random * 1000;
@@ -392,6 +437,61 @@
       statusText.textContent = msg;
     }
 
+    //顯示圖片區
+    function showImageForSound(soundPath) {
+      const imgPath = soundImages[soundPath];
+      if (!imgPath) {
+        hideCueImage();
+        return;
+      }
+      cueImage.src = imgPath;
+      imageStage.style.display = "flex";
+    }
+    
+    function hideCueImage() {
+      cueImage.src = "";
+      imageStage.style.display = "none";
+    }
+
+    //每次都要隨機秒才對
+    function scheduleNextPlay() {
+      intervalId = setTimeout(() => {
+        const cntVal = Number(stopCount.value);
+        const minVal2 = Number(stopMin.value);
+    
+        if (!isNaN(cntVal) && cntVal > 0 && playedCount >= cntVal) {
+          intervalId = null;
+          btnStart.disabled = false;
+          btnStop.disabled = true;
+          hideCueImage();
+          updateStatus();
+          return;
+        }
+    
+        if (!isNaN(minVal2) && minVal2 > 0) {
+          const elapsed = Date.now() - startTime;
+          const minutes = elapsed / 1000 / 60;
+          if (minutes >= minVal2) {
+            intervalId = null;
+            btnStart.disabled = false;
+            btnStop.disabled = true;
+            hideCueImage();
+            updateStatus();
+            return;
+          }
+        }
+    
+        const played = playRandomSound();
+        if (played) {
+          playedCount++;
+          updateStatus();
+          scheduleNextPlay();
+        }
+      }, getNextInterval());
+    }
+
+
+    
     // 開始
     btnStart.onclick = function () {
       if (intervalId) return;
@@ -427,6 +527,7 @@
           intervalId = null;
           btnStart.disabled = false;
           btnStop.disabled = true;
+          hideCueImage();
           updateStatus();
           return;
         }
@@ -440,15 +541,20 @@
             intervalId = null;
             btnStart.disabled = false;
             btnStop.disabled = true;
+            hideCueImage();
             updateStatus();
             return;
           }
         }
 
-        playRandomSound();
-        playedCount++;
+        const played = playRandomSound();
+        if (played) {
+          playedCount = 1;
+        }
+        btnStart.disabled = true;
+        btnStop.disabled = false;
         updateStatus();
-      }, getNextInterval());
+        scheduleNextPlay();
 
       btnStart.disabled = true;
       btnStop.disabled = false;
@@ -458,12 +564,13 @@
     // 停止
     btnStop.onclick = function () {
       if (intervalId) {
-        clearInterval(intervalId);
+        clearTimeout(intervalId);
         intervalId = null;
-        btnStart.disabled = false;
-        btnStop.disabled = true;
-        updateStatus();
       }
+      btnStart.disabled = false;
+      btnStop.disabled = true;
+      hideCueImage();
+      updateStatus();
     };
 
     // 開關按鈕
