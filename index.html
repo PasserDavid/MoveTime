@@ -5,10 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>動起來！！！</title>
   <style>
-    /* 完全保留你原始的 CSS 樣式，確保畫面不跑掉 */
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background-color: #000;
+      background-color: #000; [cite: 2]
       color: #fff;
       margin: 0;
       padding: 20px;
@@ -17,43 +16,43 @@
 
     .container {
       max-width: 700px;
-      margin: 0 auto;
+      margin: 0 auto; [cite: 4]
       display: flex;
       flex-direction: column;
       gap: 16px;
       position: relative;
     }
 
-    /* 浮動圖片：固定在螢幕中心，不影響原本 UI 排版 */
+    /* 浮動圖片：出現在畫面中央，不佔位 */
     #actionImg {
       position: fixed;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      z-index: 999;
+      z-index: 1000;
       max-width: 80%;
       max-height: 70vh;
       display: none;
-      pointer-events: none;
+      pointer-events: none; /* 確保不影響按鈕點擊 */
     }
 
     .group {
       background-color: #111;
-      border-radius: 10px;
+      border-radius: 10px; [cite: 5]
       padding: 16px;
       border: 1px solid #333;
     }
 
     .btn-row {
       display: flex;
-      flex-wrap: wrap;
+      flex-wrap: wrap; [cite: 6]
       gap: 12px;
       justify-content: center;
     }
 
     .btn-toggle {
       padding: 12px 20px;
-      font-size: 18px;
+      font-size: 18px; [cite: 7]
       border: none;
       border-radius: 8px;
       cursor: pointer;
@@ -61,26 +60,61 @@
       position: relative;
     }
 
-    #btnMove { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); }
-    #btnDodge { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
+    #btnMove { background: #3b82f6; box-shadow: 0 0 10px rgba(59, 130, 246, 0.3); } [cite: 9]
+    #btnDodge { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); } [cite: 10]
 
-    .btn-toggle.active { filter: brightness(1.4); box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
-    .btn-toggle.inactive { filter: brightness(0.7); box-shadow: 0 0 5px rgba(255, 255, 255, 0.1); }
-    .btn-toggle:active { transform: scale(0.98); }
+    .btn-toggle.active {
+      filter: brightness(1.4);
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.5); [cite: 11]
+    }
 
-    .level-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 12px; }
-    .level-group { display: flex; align-items: center; gap: 6px; }
-    select, input { font-size: 16px; padding: 6px 10px; background-color: #222; color: #fff; border: 1px solid #555; border-radius: 6px; }
-    input[type="number"] { width: 90px; }
-    .hint { font-size: 12px; color: #888; text-align: center; margin-top: 6px; }
-    .random-row, .stop-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: center; }
+    .btn-toggle.inactive {
+      filter: brightness(0.7);
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.1); [cite: 12]
+    }
 
-    #btnStart { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 16, 0.4); }
-    #btnStop { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status { text-align: center; font-size: 14px; color: #888; margin: 12px 0; }
+    .btn-toggle:active { transform: scale(0.98); } [cite: 13]
 
-    @media (min-width: 768px) { .btn-row, .level-row, .random-row, .stop-row { flex-direction: row; } }
+    .level-row {
+      display: flex;
+      flex-wrap: wrap; [cite: 14]
+      gap: 12px;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    .level-group { display: flex; align-items: center; gap: 6px; } [cite: 15]
+
+    select, input {
+      font-size: 16px;
+      padding: 6px 10px;
+      background-color: #222; [cite: 17]
+      color: #fff;
+      border: 1px solid #555;
+      border-radius: 6px;
+    }
+
+    input[type="number"] { width: 90px; } [cite: 19]
+
+    .hint { font-size: 12px; color: #888; text-align: center; margin-top: 6px; } [cite: 20]
+
+    .random-row, .stop-row {
+      display: flex;
+      flex-wrap: wrap; [cite: 21, 25]
+      gap: 12px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #btnStart { background: #f97316; box-shadow: 0 0 8px rgba(249, 115, 16, 0.4); } [cite: 28]
+    #btnStop { background: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); } [cite: 29]
+    button:disabled { opacity: 0.6; cursor: not-allowed; } [cite: 30]
+
+    .status { text-align: center; font-size: 14px; color: #888; margin: 12px 0; } [cite: 31]
+
+    @media (min-width: 768px) {
+      .btn-row, .level-row, .random-row, .stop-row { flex-direction: row; } [cite: 32]
+    }
   </style>
 </head>
 <body>
@@ -116,7 +150,7 @@
       <div class="input-row" style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center;">
         <label for="fixedSec">秒數：</label>
         <input type="number" id="fixedSec" min="0.3" max="5" step="0.1" value="3" />
-        <span>秒</span>
+        <span class="unit">秒</span>
       </div>
       <div class="hint">請輸入 0.3～5 秒</div>
       <div class="random-row">
@@ -135,19 +169,20 @@
         <span>或</span>
         <input type="number" id="stopMin" placeholder="分" /> <span>分</span>
       </div>
+      <div class="hint">若皆不填，則一直執行</div>
     </div>
 
     <div class="group">
       <div class="btn-row">
-        <button id="btnStart" type="button" style="padding: 10px 24px; border:none; border-radius:6px; color:#fff; cursor:pointer;">開始</button>
-        <button id="btnStop" type="button" disabled style="padding: 10px 24px; border:none; border-radius:6px; color:#fff; cursor:pointer;">停止</button>
+        <button id="btnStart" type="button" style="padding: 10px 30px; border-radius: 8px; border:none; color:white; cursor:pointer;">開始</button>
+        <button id="btnStop" type="button" disabled style="padding: 10px 30px; border-radius: 8px; border:none; color:white; cursor:pointer;">停止</button>
       </div>
       <div class="status" id="statusText">待機中</div>
     </div>
   </div>
 
   <script>
-    // 資料結構：音效在 sounds/，圖片在 image/ 
+    // 資料對應：音效與圖片(png)均放在 image/ 資料夾
     const resources = {
       move: {
         1: [
@@ -157,108 +192,134 @@
           { a: "sounds/move4.mp3", i: "image/move4.png" }
         ],
         2: [
-          { a: "sounds/move1.mp3", i: "image/move1.png" },
-          { a: "sounds/move2.mp3", i: "image/move2.png" }
+          { a: "sounds/move5.mp3", i: "image/move5.png" },
+          { a: "sounds/move6.mp3", i: "image/move6.png" }
         ],
         3: [
-          { a: "sounds/move1.mp3", i: "image/move1.png" },
-          { a: "sounds/move2.mp3", i: "image/move2.png" },
-          { a: "sounds/move3.mp3", i: "image/move3.png" }
+          { a: "sounds/move7.mp3", i: "image/move7.png" },
+          { a: "sounds/move8.mp3", i: "image/move8.png" },
+          { a: "sounds/move9.mp3", i: "image/move9.png" }
         ],
       },
       dodge: {
-        1: [{ a: "sounds/dodge1.mp3", i: "image/dodge1.png" }],
-        2: [
+        1: [
           { a: "sounds/dodge1.mp3", i: "image/dodge1.png" },
           { a: "sounds/dodge2.mp3", i: "image/dodge2.png" }
         ],
+        2: [
+          { a: "sounds/dodge3.mp3", i: "image/dodge3.png" },
+          { a: "sounds/dodge4.mp3", i: "image/dodge4.png" }
+        ],
         3: [
-          { a: "sounds/dodge1.mp3", i: "image/dodge1.png" },
-          { a: "sounds/dodge2.mp3", i: "image/dodge2.png" },
-          { a: "sounds/dodge3.mp3", i: "image/dodge3.png" }
+          { a: "sounds/dodge5.mp3", i: "image/dodge5.png" },
+          { a: "sounds/dodge6.mp3", i: "image/dodge6.png" },
+          { a: "sounds/dodge7.mp3", i: "image/dodge7.png" }
         ],
       },
     };
+
+    const actionImg = document.getElementById("actionImg");
+    const btnMove = document.getElementById("btnMove");
+    const btnDodge = document.getElementById("btnDodge");
+    const btnStart = document.getElementById("btnStart");
+    const btnStop = document.getElementById("btnStop");
+    const statusText = document.getElementById("statusText");
 
     let timerId = null;
     let playedCount = 0;
     let startTime = null;
     let isActive = { move: false, dodge: false };
 
-    const actionImg = document.getElementById("actionImg");
-    const statusText = document.getElementById("statusText");
+    function updateBtnState() {
+      btnMove.classList.toggle("active", isActive.move);
+      btnMove.classList.toggle("inactive", !isActive.move);
+      btnDodge.classList.toggle("active", isActive.dodge);
+      btnDodge.classList.toggle("inactive", !isActive.dodge);
+    }
 
-    function trainingLoop() {
-      // 停止條件檢查 [cite: 44, 69, 70]
-      const maxCnt = parseInt(document.getElementById("stopCount").value);
-      const maxMin = parseFloat(document.getElementById("stopMin").value);
-      if (maxCnt > 0 && playedCount >= maxCnt) return stopTraining();
-      if (maxMin > 0 && (Date.now() - startTime) / 60000 >= maxMin) return stopTraining();
+    // 更新狀態文字 [cite: 64]
+    function updateStatus() {
+      if (!timerId && playedCount === 0) {
+        statusText.textContent = "待機中";
+        return;
+      }
+      let msg = `播放中，已播 ${playedCount} 次`;
+      if (startTime) {
+        const diff = (Date.now() - startTime) / 1000;
+        msg += `（約 ${Math.floor(diff / 60)} 分 ${Math.floor(diff % 60)} 秒）`;
+      }
+      statusText.textContent = msg;
+    }
 
+    // 核心循環：使用 setTimeout 達成每一聲隨機 
+    function startTrainingLoop() {
+      // 檢查停止條件 [cite: 70, 71]
+      const cntLimit = parseInt(document.getElementById("stopCount").value);
+      const minLimit = parseFloat(document.getElementById("stopMin").value);
+      if (cntLimit > 0 && playedCount >= cntLimit) return stopTraining();
+      if (minLimit > 0 && (Date.now() - startTime) / 60000 >= minLimit) return stopTraining();
+
+      // 決定動作
       const choices = [];
       if (isActive.move) choices.push(...resources.move[document.getElementById("levelMove").value]);
       if (isActive.dodge) choices.push(...resources.dodge[document.getElementById("levelDodge").value]);
-      
+
       if (choices.length === 0) return stopTraining();
 
       const item = choices[Math.floor(Math.random() * choices.length)];
       
-      // 更新顯示圖片並播放音效 [cite: 41, 52]
+      // 顯示圖片與音效
       actionImg.src = item.i;
       actionImg.style.display = "block";
       new Audio(item.a).play().catch(() => {});
 
       playedCount++;
-      const diff = Math.floor((Date.now() - startTime) / 1000);
-      statusText.textContent = `播放中：已播 ${playedCount} 次（${Math.floor(diff/60)}分${diff%60}秒）`; [cite: 63]
+      updateStatus();
 
-      // 每一次都重新計算隨機時間 [cite: 58]
-      let maxSec = parseFloat(document.getElementById("fixedSec").value) || 3;
-      let minSec = 0.5; // 隨機未填預設 0.5 秒
+      // 計算下一次的時間
+      let max = parseFloat(document.getElementById("fixedSec").value) || 3;
+      let min = 0.5; // 隨機預設 0.5 [cite: 52]
       if (document.getElementById("randomCheck").checked) {
-        let val = parseFloat(document.getElementById("minSec").value);
-        if (!isNaN(val)) minSec = val;
+        let inputMin = parseFloat(document.getElementById("minSec").value);
+        if (!isNaN(inputMin)) min = inputMin;
       } else {
-        minSec = maxSec;
+        min = max;
       }
       
-      if (minSec > maxSec) minSec = maxSec;
-      const nextInterval = (Math.random() * (maxSec - minSec) + minSec) * 1000;
+      if (min > max) min = max;
+      const nextTime = (Math.random() * (max - min) + min) * 1000;
 
-      timerId = setTimeout(trainingLoop, nextInterval);
+      timerId = setTimeout(startTrainingLoop, nextTime);
     }
 
-    document.getElementById("btnStart").onclick = function() {
+    btnStart.onclick = function () {
       if (timerId) return;
       if (!isActive.move && !isActive.dodge) return alert("請開啟移動或閃躲");
+      
       playedCount = 0;
       startTime = Date.now();
-      this.disabled = true;
-      document.getElementById("btnStop").disabled = false;
-      trainingLoop();
+      btnStart.disabled = true;
+      btnStop.disabled = false;
+      startTrainingLoop();
     };
 
     function stopTraining() {
       clearTimeout(timerId);
       timerId = null;
-      document.getElementById("btnStart").disabled = false;
-      document.getElementById("btnStop").disabled = true;
+      btnStart.disabled = false;
+      btnStop.disabled = true;
       statusText.textContent = "待機中";
-      actionImg.style.display = "none"; // 停止時圖片消失
+      actionImg.style.display = "none"; // 停止時隱藏圖片
     }
 
-    document.getElementById("btnStop").onclick = stopTraining;
-    document.getElementById("btnMove").onclick = function() {
-      isActive.move = !isActive.move;
-      this.className = `btn-toggle ${isActive.move ? 'active' : 'inactive'}`;
-    };
-    document.getElementById("btnDodge").onclick = function() {
-      isActive.dodge = !isActive.dodge;
-      this.className = `btn-toggle ${isActive.dodge ? 'active' : 'inactive'}`;
-    };
+    btnStop.onclick = stopTraining;
+    btnMove.onclick = () => { isActive.move = !isActive.move; updateBtnState(); };
+    btnDodge.onclick = () => { isActive.dodge = !isActive.dodge; updateBtnState(); };
     document.getElementById("randomCheck").onchange = function() {
       document.getElementById("randomRange").style.display = this.checked ? "flex" : "none";
     };
+
+    updateBtnState();
   </script>
 </body>
 </html>
